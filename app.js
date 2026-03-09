@@ -6,7 +6,7 @@ const port = 3006;
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/plain");
-  res.end("cic!\n");
+  res.end("this is the final!\n");
 });
 
 server.listen(port, hostname, () => {
