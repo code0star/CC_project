@@ -6,7 +6,7 @@ const port = 3006;
 const server = http.createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/plain");
-  res.end("cicd flow test!\n");
+  res.end("cicd flow testsss!\n");
 });
 
 server.listen(port, hostname, () => {
