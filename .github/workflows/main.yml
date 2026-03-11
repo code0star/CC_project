@@ -28,7 +28,7 @@ jobs:
       - name: Deploy to Server 2 (New)
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST_2 }}  # Using the new secret
+          host: ${{ secrets.HOST2 }}  # Using the new secret
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
