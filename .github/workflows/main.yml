@@ -23,13 +23,16 @@ jobs:
             git fetch --all
             git reset --hard origin/main
             npm install
-            # Using the full path to avoid "command not found"
-            /home/ubuntu/.npm-global/bin/pm2 restart all
+            
+            # Dynamically find PM2 path
+            PM2_EXEC=$(which pm2 || find /home/ubuntu -name pm2 -type f -executable -print -quit 2>/dev/null || echo "pm2")
+            echo "Using PM2 at: $PM2_EXEC"
+            $PM2_EXEC restart all
 
       - name: Deploy to Server 2 (New)
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST2 }}  # Ensure this matches your GitHub Secret name
+          host: ${{ secrets.HOST2 }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
@@ -37,5 +40,8 @@ jobs:
             git fetch --all
             git reset --hard origin/main
             npm install
-            # Using the full path you found
-            /home/ubuntu/.npm-global/bin/pm2 restart all
+            
+            # Dynamically find PM2 path
+            PM2_EXEC=$(which pm2 || find /home/ubuntu -name pm2 -type f -executable -print -quit 2>/dev/null || echo "pm2")
+            echo "Using PM2 at: $PM2_EXEC"
+            $PM2_EXEC restart all
