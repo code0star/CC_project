@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Computing Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #f5f0eb;
+            --text-primary: #2c2825;
+            --text-secondary: #8a7f78;
+            --text-muted: #b5ada6;
+            --accent: #c9a882;
+            --quote-color: #3d3530;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Soft ambient blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .blob-1 {
+            width: 520px; height: 520px;
+            background: #e8d5c4;
+            top: -160px; left: -120px;
+            animation: drift1 20s ease-in-out infinite alternate;
+        }
+        .blob-2 {
+            width: 420px; height: 420px;
+            background: #cfe0d4;
+            bottom: -100px; right: -80px;
+            animation: drift2 24s ease-in-out infinite alternate;
+        }
+        .blob-3 {
+            width: 320px; height: 320px;
+            background: #ddd4ea;
+            top: 35%; left: 55%;
+            animation: drift1 28s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes drift1 {
+            from { transform: translate(0, 0) scale(1); }
+            to   { transform: translate(30px, 20px) scale(1.06); }
+        }
+        @keyframes drift2 {
+            from { transform: translate(0, 0) scale(1); }
+            to   { transform: translate(-20px, -30px) scale(1.08); }
+        }
+
+        /* Grain overlay */
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.35;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+            background-size: 160px;
+        }
+
+        /* Main wrapper */
+        .wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 640px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Small top label */
+        .top-label {
+            font-size: 10.5px;
+            font-weight: 300;
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 56px;
+            animation: fadeUp 0.9s ease 0.1s both;
+        }
+
+        /* Quote block */
+        .quote-block {
+            text-align: center;
+            padding: 0 8px;
+            animation: fadeUp 1s ease 0.25s both;
+        }
+
+        .open-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 100px;
+            line-height: 0.35;
+            color: var(--accent);
+            opacity: 0.4;
+            display: block;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+
+        .quote-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(28px, 5.5vw, 44px);
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--quote-color);
+            letter-spacing: 0.2px;
+            transition: opacity 0.55s ease, transform 0.55s ease;
+        }
+
+        .quote-text.fade-out {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+
+        /* Thin separator */
+        .sep {
+            width: 36px;
+            height: 1px;
+            background: var(--accent);
+            opacity: 0.45;
+            margin: 40px auto;
+            animation: fadeUp 1s ease 0.5s both;
+        }
+
+        /* Footer info */
+        .footer-info {
+            text-align: center;
+            animation: fadeUp 1s ease 0.65s both;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .delivered-label {
+            font-size: 10.5px;
+            font-weight: 300;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .instance-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .instance-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .dot-sep {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            opacity: 0.5;
+            flex-shrink: 0;
+        }
+
+        .instance-ip {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.4px;
+        }
+
+        /* Refresh hint */
+        .refresh-hint {
+            margin-top: 56px;
+            font-size: 10px;
+            font-weight: 300;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            opacity: 0.5;
+            animation: fadeUp 1s ease 0.8s both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="grain"></div>
+
+<div class="wrapper">
+
+    <span class="top-label">Cloud Computing Project</span>
+
+    <div class="quote-block">
+        <span class="open-quote">&ldquo;</span>
+        <p class="quote-text" id="quoteText"></p>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="footer-info">
+        <span class="delivered-label">This quote delivered by</span>
+        <div class="instance-row">
+            <span class="instance-name"><%= serverID %></span>
+            <span class="dot-sep"></span>
+            <span class="instance-ip"><%= ip %></span>
+        </div>
+    </div>
+
+    <span class="refresh-hint">Refresh to switch node</span>
+
+</div>
+
+<script>
+    const quotes = [
+        "The cloud is not a place, it's a practice.",
+        "Any sufficiently advanced technology is indistinguishable from magic.",
+        "The best way to predict the future is to invent it.",
+        "Infrastructure is the quiet backbone of every great idea.",
+        "Scalability is not an afterthought — it's architecture.",
+        "In the cloud, every failure is a lesson in resilience.",
+        "Distribute the load. Distribute the power.",
+        "Great systems are built on great foundations.",
+        "Uptime is not a metric. It's a promise.",
+        "The network is the computer.",
+        "Simplicity is the ultimate sophistication.",
+        "Build for failure, design for success.",
+    ];
+
+    const quoteEl = document.getElementById('quoteText');
+
+    function setQuote(text) {
+        quoteEl.textContent = text;
+    }
+
+    // Set random quote on load
+    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+
+    // Rotate every 7s with smooth fade
+    setInterval(() => {
+        quoteEl.classList.add('fade-out');
+        setTimeout(() => {
+            setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+            quoteEl.classList.remove('fade-out');
+        }, 580);
+    }, 7000);
+</script>
+</body>
+</html>

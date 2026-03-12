@@ -22,7 +22,7 @@ jobs:
             cd ~/CC_project
             git fetch --all
             git reset --hard origin/main
-            npm install
+            npm install --production
             
             # Dynamically find PM2 path
             PM2_EXEC=$(which pm2 || find /home/ubuntu -name pm2 -type f -executable -print -quit 2>/dev/null || echo "pm2")
@@ -39,7 +39,7 @@ jobs:
             cd ~/CC_project
             git fetch --all
             git reset --hard origin/main
-            npm install
+            npm install --production
             
             # Dynamically find PM2 path
             PM2_EXEC=$(which pm2 || find /home/ubuntu -name pm2 -type f -executable -print -quit 2>/dev/null || echo "pm2")
