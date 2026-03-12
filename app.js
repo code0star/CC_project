@@ -39,7 +39,7 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
     res.render('index', {
         serverID: serverIdentity,
-        ip: currentPublicIP || currentPrivateIP  // shows public IP
+        ip: currentPublicIP   // shows public IP
     });
 });
 
