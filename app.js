@@ -14,38 +14,38 @@ for (const interfaceName in networkInterfaces) {
     }
 }
 
+// Resolve server identity from private IP
+function getServerIdentity(privateIP) {
+    if (privateIP === '172.31.42.54') return "Server 1 (Primary)";
+    if (privateIP === '172.31.26.89') return "Server 2 (Backup)";
+    return "Local Dev";
+}
+
 // Get public IP from EC2 metadata
-let currentPublicIP = '';
 async function getPublicIP() {
     try {
         const res = await fetch('http://169.254.169.254/latest/meta-data/public-ipv4');
-        currentPublicIP = await res.text();
+        return await res.text();
     } catch (e) {
-        currentPublicIP = currentPrivateIP; // fallback for local dev
+        return currentPrivateIP; // fallback for local dev
     }
-}
-
-let serverIdentity = "Unknown Server";
-if (currentPrivateIP === '172.31.42.54') {
-    serverIdentity = "Server 1 (Primary)";
-} else if (currentPrivateIP === '172.31.26.89') {
-    serverIdentity = "Server 2 (Backup)";
-} else {
-    serverIdentity = `Local Dev`;
 }
 
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
     res.render('index', {
-        serverID: serverIdentity,
-        ip: currentPublicIP   // shows public IP
+        serverID: getServerIdentity(currentPrivateIP),
+        ip: app.locals.publicIP || currentPrivateIP
     });
 });
 
 // Fetch public IP first, then start server
-getPublicIP().then(() => {
+getPublicIP().then((publicIP) => {
+    app.locals.publicIP = publicIP;
+    const serverIdentity = getServerIdentity(currentPrivateIP);
+
     app.listen(port, '0.0.0.0', () => {
-        console.log(`Running on ${serverIdentity} — Public IP: ${currentPublicIP}`);
+        console.log(`Running on ${serverIdentity} — Private IP: ${currentPrivateIP} — Public IP: ${publicIP}`);
     });
 });
